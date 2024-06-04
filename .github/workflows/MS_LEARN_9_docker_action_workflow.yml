@@ -1,0 +1,35 @@
+# Docker container action은 아래 네 가지 파일 하나의 디렉토리에 작성되어야 합니다.
+#     1. Dockerfile
+#     2. entrypoint.sh 
+#     3. README.md
+#     4. action.yml 
+#
+# 아래 예시 코드는 `.github/actions/9_docker_action` 디렉토리에 작성된 커스텀 action을 workflow에 사용하는 방법을 보여줍니다.  
+name: Use Custom Docker Action in Workflow 
+on:
+  workflow_dispatch: 
+    inputs:
+      logLevel:
+        description: Log level
+        required: true 
+        default: 'warning'
+      tags: 
+        description: Test scenario tags 
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+      # private action 사용을 위해서는 체크아웃 필요 / public 액션의 경우 우측 Marketplace에서 특정 action 검색 및 사용 
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Hello world action step
+        uses: ./.github/actions/9_docker_action # `action.yml`이 위치한 디렉토리
+        id: hello
+        with:
+          # action에 정의된 input `who-to-greet` 변수 pass in
+          who-to-greet: 'cynicdog'
+      # action에 정의된 output 사용 
+      - name: Get the output time
+        run: echo "The time was ${{ steps.hello.outputs.time }}"

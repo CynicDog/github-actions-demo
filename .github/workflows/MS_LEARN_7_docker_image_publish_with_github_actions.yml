@@ -1,0 +1,60 @@
+# GitHub Container Registry에 Github 리포지토리에 존재하는 Dockerfile을 푸시합니다. 
+name: Publish to Docker With Github Actions 
+
+on:
+  workflow_dispatch: 
+    inputs:
+      logLevel:
+        description: Log level
+        required: true 
+        default: 'warning'
+      tags: 
+        description: Test scenario tags 
+        
+permissions:
+  packages: write
+  contents: read
+  
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      # 프로젝트 디렉토리에 위치한 Dockerfile을 체크아웃하기 위해 actions/checkout@v4 액션 실행   
+      - name: Checkout
+        uses: actions/checkout@v4
+      # 푸시될 이미지 메타 데이터 설정 
+      #     액션 실행 로그에서 `ghcr.io/cynicdog/publish-packages/game:sha-adffea4`와 같이 해시 태그가 추가된 이미지 이름 확인 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/cynicdog/publish-packages/game
+          tags: type=sha
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+
+# GitHub Container Registry 업로드된 이미지를 내려받기 위한 순서는 다음과 같습니다. 
+#   1. 도커 CLI 로그인을 위한 Personal Access Token(PAT) 발행:  
+#       Github 계정 Settings > 좌측 메뉴 하단 Developer Settings > Personal Access Token > Generate New Token (classic) 
+#       > `write:packages` 권한 클릭 및 생성 완료 > 생성된 토큰 복사 
+#
+#   2. PowerShell 실행 및 로그인: 
+#        > docker login ghcr.io -u cynicdog({USERNAME})
+#        > password: {PAT 토큰}  
+#
+#   3. 이미지 내려받기:
+#        `docker pull ghcr.io/cynicdog/publish-packages/game:sha-adffea4`
+#
+#   4. 이미지 확인 및 실행: 
+#        > docker images 
+#        > docker run ... 

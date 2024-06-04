@@ -1,0 +1,26 @@
+# 이 워크플로우는 main 브랜치에 푸시될 때 실행됩니다.
+# 이 작업은 Ubuntu 최신 버전에서 실행되며, 다음 단계로 구성됩니다:
+#   1. "Hello Github Actions" 메시지를 출력합니다.
+#   2. 저장소를 체크아웃합니다.
+#   3. 저장소의 파일 목록을 출력합니다.
+name: My First Workflow 
+
+on:
+  push: 
+    branches: 
+      - main
+
+jobs: 
+  MyFirstJob: 
+    runs-on: ubuntu-latest 
+    steps: 
+      - name: Hello Github Actions  
+        run: echo "Hello Github Actions!" 
+
+      - name: Checkout
+        uses: actions/checkout@v4.1.5
+
+      - name: List files in the repository 
+        run: |
+          echo "The repository ${{ github.repository }} contains the following files: "
+          tree 

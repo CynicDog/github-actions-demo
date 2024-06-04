@@ -1,0 +1,70 @@
+# 이 워크플로우는 NPM 의존성을 캐시하여 빌드를 최적화하는 예제입니다.
+# 워크플로우 수행에 필요한 종속성을 매 작업마다 반복해서 다운로드하는 대신 종속성을 캐싱할 수 있습니다. 
+name: NPM build with cached dependencies 
+
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: Log level
+        required: true
+        default: 'warning'
+      tags:
+        description: Test scenario tags
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+        
+    steps:
+      - uses: actions/checkout@v4.1.5
+      
+      # Node.js 버전을 설정하고, npm 캐시를 사용하여 의존성을 설치합니다.
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # npm 및 node_modules 디렉터리를 캐시합니다. 
+      - name: Cache NPM dependencies
+        id: cache-npm-deps
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: node-cache-${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            node-cache-${{ runner.os }}-npm-
+
+      # 이전에 캐시된 의존성이 있는지 확인하고, 없으면 npm install을 실행하여 의존성을 설치합니다.
+      - name: Install dependencies
+        if: steps.cache-npm-deps.outputs.cache-hit != 'true'
+        run: npm install
+      
+      # 캐시된 NPM 의존성 및 node_modules 디렉터리의 존재 여부를 확인합니다.
+      - name: Check for cached NPM dependencies
+        run: |
+          # NPM 캐시 디렉터리의 존재 여부 확인
+          if [ -d "/home/runner/.npm" ]; then
+            echo "NPM cache directory exists. Cache was used."
+          else
+            echo "NPM cache directory does not exist. Cache was not used."
+          fi
+          # node_modules 디렉터리의 존재 여부 확인
+          if [ -d "node_modules" ]; then
+            echo "node_modules directory exists. Packages were installed."
+          else
+            echo "node_modules directory does not exist. Packages were not installed."
+          fi
+      
+      # 프로젝트를 빌드합니다.
+      - name: Build project
+        run: npm run build
+
+## Build continuous integration (CI) workflows by using GitHub Actions > Customize your workflow with environment variables and artifact data
+## https://learn.microsoft.com/en-us/training/modules/github-actions-ci/2b-github-actions-essential-features

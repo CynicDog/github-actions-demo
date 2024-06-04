@@ -1,0 +1,69 @@
+#  workflow와 action의 차이 
+#   [ workflow ]
+#     : 리포지토리 내에서 자동화된 프로세스를 의미. `./github/workflows` 디렉토리에 `anyhow_you_would_name.yml` 형식으로 저장됨 
+#   [ action ]
+#     - 개념: 여러 워크플로우에서 재사용할 수 있는 특정 기능을 의미. Github Marketplace에 등록될 수 있으며, `action.yml`의 이름으로 저장됨. 
+#     - 종류: 
+#        1. Public (오픈소스 action. action을 위한 자체 리포지토리를 사용하여 다른 애플리케이션 코드와 분리를 권장 (버전 관리 용이, Github 커뮤니티 공동 작업에 용이)) 
+#        2. Private  
+#  
+#  action의 세 가지 종류: 
+#    1. Docker container actions
+#    : 모든 종속성이 해당 컨테이너 내에 있기 때문에 작업이 일관되고 안정적인 환경에서 실행됨 (작업 실행 환경과 작업코드가 같이 패키징됨)
+#      - 장점: environment configuration 용이 (customize the operating system and tools) 
+#      - 단점: JavaScript actions보다 느림  
+#      - 단계: 
+#           1. Create a `Dockerfile` to define the commands to assemble the Docker image.
+#           2. Create an `action.yml` metadata file to define the inputs and outputs of the action. Set the `runs: using:` value to `docker` and the `runs: image:` value to `Dockerfile` in the file.
+#           3. Create an `entrypoint.sh` file to describe the docker image.
+#           4. Commit and push your action to GitHub with the following files: `action.yml`, `entrypoint.sh`, `Dockerfile`, and `README.md`.
+#
+#    2. JavaScript actions
+#    : 작업 실행 환경과 작업코드가 분리됨
+#      - 장점: 작업 실행 속도가 빠름, 단순한 작업 코드
+#      - 단점: 환경 설정 제한됨, 빌드의 일관성이 떨어질 수 있음 (GitHub Actions Toolkit Node.js 라이브러리 사용을 통해 빌드 일관성 제고) 
+#      - 단계: 
+#           1. Create an `action.yml` metadata file to define the inputs and outputs of the action, as well as tell the action runner how to start running this JavaScript action.
+#           2. Create an `index.js` file with context information about the Toolkit packages, routing, and other functions of the action.
+#           3. Commit and push your action to GitHub with the following files: `action.yml`, `index.js`, `node_modules`, `package.json`, `package-lock.json`, and `README.md`.
+#    3. Composite run steps actions
+#    : 셸 스크립트를 사용, 다양한 셸 언어가 지원됨. 기존 작성된 다른 액션을 재사용할 수도 있음  
+#
+#  action 버전 관리 
+#    1. 태그 
+#        - Semantic versioning 사용 (Major.Minor.Patch) 
+#        - 릴리스 태그(예: v1.0.2)를 만들기 전에 릴리스 브랜치(예: release/v1)에서 릴리스 유효성을 검사합니다.
+#        - 브랜치는 Major 버전에 맞춤 (such as v1, v2) 
+#        - 베타 태그가 있는 주 버전을 릴리스하여 버전 상태를 표시합니다(예: v2-beta). 릴리스가 준비되면 -beta 태그를 제거할 수 있습니다.
+#        - 예)
+#          steps:
+#            - uses: actions/javascript-action@v1.0.1
+#    2. 해시 
+#        - 예)
+#          steps:
+#            - uses: actions/javascript-action@a824008085750b8e136effc585c3cd6082bd575f
+#    3. 브랜치 명 
+#        - 예)
+#          steps:
+#            - uses: actions/javascript-action@main
+#
+# 아래 예시 코드는 `.github/actions/8_javascript_action` 디렉토리에 작성된 커스텀 action을 workflow에 사용하는 방법을 보여줍니다.   
+name: Use Custom Javascript Action in Workflow
+
+on:
+  workflow_dispatch: 
+    inputs:
+      logLevel:
+        description: Log level
+        required: true 
+        default: 'warning'
+      tags: 
+        description: Test scenario tags 
+
+jobs:
+  use-custom-action:
+    runs-on: ubuntu-latest 
+    steps: 
+      - uses: actions/checkout@v4.1.5
+      - name: custom-action-usage-demo
+        uses: ./.github/actions/8_javascript_action

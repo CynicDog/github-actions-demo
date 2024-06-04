@@ -1,0 +1,37 @@
+# 이 워크플로우는 GitHub Actions의 환경 변수를 사용하는 방법을 보여주는 예제입니다.
+#
+# 환경변수 유형:
+#   - 기본 환경변수 (https://docs.github.com/en/actions/learn-github-actions/variables) 
+#   - 사용자 정의 환경변수 
+# 
+# 이 예제에서는 몇 가지 기본 환경 변수와 사용자 정의 환경 변수를 출력합니다.
+name: Environment Variables Demo 
+on:
+  workflow_dispatch: 
+    inputs:
+      logLevel:
+        description: Log level
+        required: true 
+        default: 'warning'
+      tags: 
+        description: Test scenario tags 
+
+jobs: 
+  environment-variables-demo: 
+    runs-on: ubuntu-latest 
+    steps: 
+    - run: echo "This is a demo workflow to get familiar with GitHub Actions default environment, on the branch of $GITHUB_REF !"
+    - run: echo "The name of the current action - $GITHUB_ACTION "
+    - run: echo "The actor who initiated the workflow - $GITHUB_ACTOR" 
+    - run: echo "The current job id - $GITHUB_JOB"
+    - run: echo "The repository of the current workflow - $GITHUB_REPOSITORY_ID"
+    - run: echo "The OS of the runner of the current workflow - $RUNNER_OS "
+    - name: is window OS? 
+      if: runner.os == 'Windows'
+      run: echo "The runner is running on $RUNNER_OS"
+    - run: echo "Nice work, $First_Name. That's how you define and use custom environment variables!"
+      env: 
+        First_Name: John
+
+## Build continuous integration (CI) workflows by using GitHub Actions > Customize your workflow with environment variables and artifact data
+## https://learn.microsoft.com/en-us/training/modules/github-actions-ci/2b-github-actions-essential-features

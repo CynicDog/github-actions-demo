@@ -1,0 +1,62 @@
+# https://docs.github.com/en/actions/learn-github-actions/expressions
+name: Expressions and Functions 
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  demo-job:
+    runs-on: ubuntu-latest
+    env:
+      MY_BOOLEAN: ${{ true }}
+      MY_NUMBER: ${{ 123 }}
+      MY_STRING: 'Hello, GitHub Actions!'
+      MY_FORMAT_STRING: '{{ Hello, {0} {1} }}'
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4.1.5
+
+      # 환경변수를 활용한 조건문  
+      - name: Run script if on main branch
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          echo "This runs only on the main branch"
+          echo "Running some main branch specific tasks..."
+
+      # step 실행 성공에 따른 행위 지정 
+      - name: Run on success
+        if: ${{ success() }}
+        run: |
+          echo "This runs because the previous step succeeded"
+      
+      # 문자열 함수: contains(), startsWith(), endsWith(), format(), join() 
+      - name: Use contains function
+        run: |
+          if ${{ contains(env.MY_STRING, 'Hello') }}; then
+            echo "This commit message contains the word 'Hello'"
+          else
+            echo "This commit message does not contain the word 'Hello'"
+          fi
+      - name: Use startsWith function
+        run: |
+          if ${{ startsWith(env.MY_STRING, 'H') }}; then
+            echo "This commit message starts with 'H'"
+          else
+            echo "This commit message does not start with 'H'"
+          fi
+      - name: Use endsWith function
+        run: |
+          if ${{ endsWith(env.MY_STRING, '!') }}; then
+            echo "This commit message ends with '!'"
+          else
+            echo "This commit message does not end with '!'"
+          fi
+      - name: Use format function
+        run: |
+          echo ${{ format(env.MY_FORMAT_STRING, 'Github', 'Action') }}
+      - name: Use join function
+        run: |
+          echo ${{ join(github.event.issue.labels.*.name, ', ') }}

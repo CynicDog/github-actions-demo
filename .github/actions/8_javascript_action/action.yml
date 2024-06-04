@@ -1,0 +1,6 @@
+name: "JavaScript action demo"
+description: "JavaScript action demo"
+
+runs:
+  using: "node16"
+  main: "index.js"

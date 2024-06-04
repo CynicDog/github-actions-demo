@@ -1,0 +1,30 @@
+# 이 워크플로우는 수동으로 트리거될 수 있습니다.
+# workflow_dispatch 이벤트를 사용하기 때문에 수동 트리거가 가능합니다.
+#
+# GitHub Actions는 다양한 트리거 유형을 지원합니다:
+#   1. webhook 트리거: 푸시(push), 풀 리퀘스트(pull request) 등 특정 이벤트에 의해 트리거
+#   2. schedule 트리거: cron 스케줄러를 사용해 정기적으로 트리거 
+#   3. dispatch 트리거
+#      - repository_dispatch: 외부 이벤트(REST API)에 의해 트리거됨
+#      - workflow_dispatch: GitHub UI에서 수동으로 트리거됨 
+name: My First Workflow with Manual Triggers
+
+on:
+  workflow_dispatch: 
+    inputs:
+      logLevel:
+        description: Log level
+        required: true 
+        default: 'warning'
+      tags: 
+        description: Test scenario tags 
+
+jobs: 
+  MyFirstJob:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: Hello Github Actions 
+        run: echo "Hello Github Actions! This is a manually triggered workflow."
+
+
+# webhook 트리거 목록: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows

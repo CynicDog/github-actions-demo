@@ -1,0 +1,70 @@
+# GitHub Actions 실행을 통해, 
+#     1. GitHub Packages 레지스트리에 패키지를 배포하거나, 
+#     2. Github Container Registry(ghcr)에 도커 이미지를 업로드할 수 있습니다. (7번 예시코드 참고) 
+#
+# 작성 시점 기준으로, GitHub Packages는 다음 패키지 관리자와 호환됩니다:
+#   - npm: NodeJS 패키지 관리자
+#   - NuGet: .NET 패키지 관리자
+#   - RubyGems: Ruby 패키지 관리자
+#   - Maven 및 Gradle: Java 패키지 관리자
+#
+# 현 예시 코드에서는 npm 패키지 관리자를 활용하여 GitHub Packages 레지스트리에 Node 프로젝트를 배포하는 과정이 구현되었습니다. 
+name: Github Actions NPM Publish 
+
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: Log level
+        required: true
+        default: 'warning'
+      tags:
+        description: Test scenario tags
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm install
+
+  publish-to-github-packages:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: https://npm.pkg.github.com/
+          scope: '@cynicdog'
+      - run: npm ci
+      - run: npm publish
+        env:
+          # NODE_AUTH_TOKEN 설정 방법 
+          #   1. 계정 Settings > 좌측 메뉴 하단 Developer Settings > PAT (Classic) 발행 및 `write:packages` 권한 부여 
+          #   2. 현 리포지토리 Settings > Secrets and Variables > Actions 이동 > 발행된 PAT를 Repository secrets로 등록 
+          #     (예시: { 
+          #         key: `PUBLISH_GITHUB_TOKEN`,
+          #         value: {생성된 PAT 값}
+          #     })    
+          NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_GITHUB_TOKEN }}
+
+
+# node 프로젝트 설정 방법  
+#     1. `npm init` 실행 후 프로젝트 이름을 @{GITHUB_USERNAME}/{REPOSITORY_NAME} 형식에 맞추어 작성합니다. 
+#        예) @cynicdog/github-actions-demo
+#     2. `npm install` 실행 후 생성된 package.json 파일에 설정 내용
+#          ```
+#          "publishConfig": {
+#             "@{GITHUB_USERNAME}:registry": "https://npm.pkg.github.com"
+#          },
+#          ```을 추가하여 설정을 마무리 합니다. 
+
+# https://learn.microsoft.com/en-us/training/modules/github-actions-packages/2b-publish-using-workflow  

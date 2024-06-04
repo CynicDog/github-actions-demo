@@ -1,0 +1,19 @@
+{
+  "name": "@cynicdog/github-actions-demo",
+  "version": "1.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm ll"
+  },
+  "author": "",
+  "license": "ISC",
+  "publishConfig": {
+    "@cynicdog:registry": "https://npm.pkg.github.com"
+  },
+  "dependencies": {
+    "@patternfly/react-core": "^5.3.3",
+    "bootstrap": "^5.3.3"
+  }
+}
