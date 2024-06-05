@@ -29,10 +29,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      # npm 및 node_modules 디렉터리를 캐시합니다. 
-      # The cache action first searches for cache hits for key and the cache version in the branch containing the workflow run. 
-      # If there is no hit, it searches for restore-keys and the version. If there are still no hits in the current branch, 
-      # the cache action retries same steps on the default branch.
+      # npm 및 node_modules 디렉터리를 캐시합니다.
       - name: Cache NPM dependencies
         id: cache-npm-deps
         uses: actions/cache@v4
@@ -43,6 +40,11 @@ jobs:
           key: node-cache-${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             node-cache-${{ runner.os }}-npm-
+          # `restore-keys` allows you to specify a list of alternate restore keys to use when there is a cache miss on key. 
+          # You can create multiple restore keys ordered from the most specific to least specific. 
+          # The cache action searches the `restore-keys` in sequential order. When a key doesn't match directly,
+          # the action searches for keys prefixed with the restore key. If there are multiple partial matches for a restore key, 
+          # the action returns the most recently created cache
 
       # 이전에 캐시된 의존성이 있는지 확인하고, 없으면 npm install을 실행하여 의존성을 설치합니다.
       - name: Install dependencies
