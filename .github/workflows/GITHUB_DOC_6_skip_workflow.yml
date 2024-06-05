@@ -1,0 +1,24 @@
+# https://docs.github.com/en/actions/managing-workflow-runs/skipping-workflow-runs
+# 
+# 다음 문자열을 푸시의 커밋 메시지에 추가하거나 끌어오기 요청의 HEAD 커밋에 추가하면 
+# on: push 또는 on: pull_request를 트리거 이벤트로 지정한 워크플로우는 트리거되지 않습니다.
+#
+#   [skip ci]
+#   [ci skip]
+#   [no ci]
+#   [skip actions]
+#   [actions skip] 
+# 
+# 현재 워크플로우 파일을 생성 또는 수정 시 입력하게되는 커밋 메세지에 위의 skip 키워드를 포함하면 워크플로우 실행이 되지 않는 것을 확인할 수 있습니다.   
+name: Skip Workflow 
+
+on:
+  push: 
+    branches: 
+      - main
+
+jobs: 
+  a-job-to-be-skipped:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Hello, GitHub Actions! This message won't be logged on the push with the message of [skip ci]"
