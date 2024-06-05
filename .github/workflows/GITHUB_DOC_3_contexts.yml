@@ -1,0 +1,49 @@
+# https://docs.github.com/en/actions/learn-github-actions/contexts
+#
+# 컨텍스트는 workflow 실행, 변수, 실행기 환경, 작업 및 단계에 대한 정보에 액세스하는 방법입니다. 각 컨텍스트는 문자열 또는 다른 개체일 수 있는 속성을 포함하는 개체입니다.
+# workflow key에 따라 사용할 수 있는 컨텍스트가 달라집니다. (https://docs.github.com/ko/actions/learn-github-actions/contexts#context-availability) 
+name: Contexts 
+
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Test scenario tags'
+jobs:
+  dump_contexts_to_log:
+    runs-on: ubuntu-latest
+    steps:
+      # github 컨텍스트에는 workflow 실행 및 실행을 트리거한 이벤트에 대한 정보가 포함됩니다. 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      # job 컨텍스트에는 현재 실행 중인 작업에 대한 정보가 포함됩니다.
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: echo "$JOB_CONTEXT"
+      # steps 컨텍스트에는 지정되어 있고 이미 실행된 id 가 있는 현재 작업의 단계에 대한 정보가 포함됩니다.
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo "$STEPS_CONTEXT"
+      # runner 컨텍스트에는 현재 작업을 실행하는 runner 정보가 포함됩니다.
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+        run: echo "$RUNNER_CONTEXT"
+      # matrix가 있는 workflow의 경우 strategy 컨텍스트에는 현재 작업에 대한 행렬 실행 전략에 대한 정보가 포함됩니다.
+      - name: Dump strategy context
+        env:
+          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+        run: echo "$STRATEGY_CONTEXT"
+      # 행렬이 있는 workflow의 경우 matrix 컨텍스트에는 현재 작업에 적용되는 workflow의 파일에 정의된 행렬 속성이 포함됩니다.
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        run: echo "$MATRIX_CONTEXT"
