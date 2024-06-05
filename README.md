@@ -9,7 +9,7 @@
 [![Use Custom Docker Action in Workflow](https://github.com/CynicDog/github-actions-demo/actions/workflows/MS_LEARN_9_docker_action_workflow.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/MS_LEARN_9_docker_action_workflow.yml)
 [![Add scripts to your workflow](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_1_add_scripts_to_workflow.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_1_add_scripts_to_workflow.yml)
 [![Expressions and Functions](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_2_expressions_and_functions.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_2_expressions_and_functions.yml)
-[![Contexts](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_3_contexts.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_3_contexts.yml)
+[![Contexts and Variables](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_3_contexts_and_variables.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_3_contexts_and_variables.yml)
 
 # Microsoft Learn's GitHub Actions Collections  
 https://learn.microsoft.com/en-us/collections/n5p4a5z7keznp5
