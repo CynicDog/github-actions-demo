@@ -1,0 +1,249 @@
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategymatrixinclude
+#
+# For each object in the include list, the 'key:value' pairs in the object will be added to each of the matrix combinations
+# if none of the 'key:value' pairs overwrite any of the original matrix values.
+# If the object cannot be added to any of the matrix combinations, a new matrix combination will be created instead. 
+# Note that the original matrix values will not be overwritten, but added matrix values can be overwritten.
+# 
+# 각 include 목록의 객체는, 만약 해당 객체의 키:값 쌍이 기존 매트릭스 값을 덮어쓰지 않는다면, 모든 매트릭스 조합에 추가됩니다.
+# 만약 해당 객체가 어떤 매트릭스 조합에도 추가될 수 없다면, 새로운 매트릭스 조합이 대신 생성됩니다. (덮어씌우지 않는 이상 추가될 수 없다면)
+# 원래의 매트릭스 값은 덮어쓰일 수 없으나, 추가된 매트릭스 값은 덮어쓸 수 있습니다.
+name: Matrix Combinations
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: Log level
+        required: true
+        default: 'warning'
+      tags:
+        description: Test scenario tags
+        
+jobs:
+######################################################################################################################################################################################
+  # Q1. 다음 매트릭스에 대하여 몇 개의 작업(Jobs)가 존재하는가? 
+  question_1:
+    runs-on: ubuntu-latest
+    strategy:  
+      matrix:
+        fruit: [apple, pear]
+        animal: [cat, dog]
+        # Original matrix combinations: 
+        #      {fruit: apple, animal: cat}         
+        #      {fruit: apple, animal: dog}
+        #      {fruit: pear, animal: cat}
+        #      {fruit: pear, animal: dog}       
+        
+        include:
+          - color: green       # no additional matrix combinations because 'color' key doesn't exist in original matrix
+          
+                               # matrix combinations: 
+                               #     * {fruit: apple, animal: cat, color: green}         
+                               #     * {fruit: apple, animal: dog, color: green}
+                               #     * {fruit: pear, animal: cat, color: green}
+                               #     * {fruit: pear, animal: dog, color: green}      *: affected 
+          
+          ###########################################################################################
+          - color: pink        # adds {color: pink} to combinations with animal: cat, overwriting green
+            animal: cat        # overwrites 'animal' key for combinations with animal: cat
+               
+                               # matrix combinations:
+                               #     * {fruit: apple, animal: cat, color: pink} 
+                               #       {fruit: apple, animal: dog, color: green}
+                               #     * {fruit: pear, animal: cat, color: pink}
+                               #       {fruit: pear, animal: dog, color: green}
+                               
+          ###########################################################################################
+          - fruit: apple       # adds {shape: circle} to combinations with fruit: apple
+            shape: circle      # no additional matrix combinations because 'shape' key doesn't exist in original matrix 
+
+                               # matrix combinations:
+                               #     * {fruit: apple, animal: cat, color: pink, shape: circle} 
+                               #     * {fruit: apple, animal: dog, color: green, shape: circle}
+                               #       {fruit: pear, animal: cat, color: pink}
+                               #       {fruit: pear, animal: dog, color: green}
+
+          ###########################################################################################
+          - fruit: banana      # adds {fruit: banana} as it doesn't overwrite any existing key
+
+                               # matrix combinations:
+                               #       {fruit: apple, animal: cat, color: pink, shape: circle} 
+                               #       {fruit: apple, animal: dog, color: green, shape: circle}
+                               #       {fruit: pear, animal: cat, color: pink}
+                               #       {fruit: pear, animal: dog, color: green}                    
+                               #     * {fruit: banana}
+                               
+          ###########################################################################################                               
+          - fruit: banana      # adds {fruit: banana, animal: cat} as it doesn't overwrite any existing key
+            animal: cat        # combinations with fruit: banana is not 'original' matrix combination 
+
+                               # matrix combinations:
+                               #       {fruit: apple, animal: cat, color: pink, shape: circle} 
+                               #       {fruit: apple, animal: dog, color: green, shape: circle}
+                               #       {fruit: pear, animal: cat, color: pink}
+                               #       {fruit: pear, animal: dog, color: green}                    
+                               #       {fruit: banana}
+                               #     * {fruit: banana, animal: cat}
+    steps:
+      - name: Print Combinations
+        run: |
+          echo "Matrix Combinations:"
+          echo "${{ toJson(matrix) }}"
+  # A1. 6개
+  
+######################################################################################################################################################################################
+  # Q2. 다음 매트릭스에 대하여 몇 개의 작업(Jobs)가 존재하는가? 
+  question_2:
+    runs-on: ubuntu-latest
+    strategy:  
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        node: [14, 16]
+        include:
+          - os: windows-latest
+            node: 16
+            npm: 6
+    steps:
+      - name: Print Combinations
+        run: |
+          echo "Matrix Combinations:"
+          echo "${{ toJson(matrix) }}"    
+  # A2. 4개 
+
+######################################################################################################################################################################################
+  # Q3. 다음 매트릭스에 대하여 몇 개의 작업(Jobs)가 존재하는가? 
+  question_3:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+        version: [latest, beta]
+        include:
+          - browser: safari
+            version: latest
+          - browser: edge
+            version: beta
+    steps:
+      - name: Print Combinations
+        run: |
+          echo "Matrix Combinations:"
+          echo "${{ toJson(matrix) }}"
+  # A3. 6개 
+
+######################################################################################################################################################################################
+  # Q4. 다음 매트릭스에 대하여 몇 개의 작업(Jobs)가 존재하는가? 
+  question_4:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [development, production]
+        region: [us-east, us-west]
+        include:
+          - environment: production
+            region: us-east
+            deploy: true
+          - environment: development
+            region: us-west
+            debug: true
+          - environment: testing
+            region: us-central
+    steps:
+      - name: Print Combinations
+        run: |
+          echo "Matrix Combinations:"
+          echo "${{ toJson(matrix) }}"
+
+  # A4. 5개 
+  # {environment: development, region: us-east}
+  # {environment: development, region: us-west, debug: true} 
+  # {environment: production, region: us-east, deploy: true} 
+  # {environment: production, region: us-west}
+  # {environment: testing, region: us-central} 
+
+######################################################################################################################################################################################
+  # Q5. 다음 매트릭스에 대하여 몇 개의 작업(Jobs)가 존재하는가? 
+  question_5:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        fruit: [apple, banana]
+        color: [red, yellow]
+        include:
+          - fruit: apple    
+            color: green        
+            # { fruit: apple, color: green} 추가됨  
+            #     The object - {fruit: apple, color: green} adds a new combination { fruit: apple, color: green } because:
+            #         It has a different value for the color key than any existing combinations (red and yellow).
+            #         It doesn't have any key-value pairs that overwrite existing keys in the original matrix combinations.
+            #     (덮어씌우지 않는 이상 추가될 수 없음 -> 새로운 조합으로 추가)  
+          - fruit: banana      
+            shape: long          
+          - fruit: cherry 
+            color: red    
+            # { fruit: cherry, color: red} 추가됨 
+          - fruit: apple
+            size: large
+            flavor: sweet       
+          - fruit: banana 
+            color: green
+            flavor: bitter
+            # { fruit: banana, color: green, flavor: bitter} 추가됨 
+    steps:
+      - name: Print Combinations
+        run: |
+          echo "Matrix Combinations:"
+          echo "${{ toJson(matrix) }}"
+
+  # A5. 7개 (4 + 3) 
+  # { fruit: apple, color: red, size: large, flavor: sweet},
+  # { fruit: apple, color: yellow, size: large, flavor: sweet}, 
+  # { fruit: banana, color: red, shape: long}, 
+  # { fruit: banana, color: yellow, shape: long}, 
+
+  # { fruit: apple, color: green}, 
+  # { fruit: cherry, color: red}, 
+  # { fruit: banana, color: green, flavor: bitter}
+
+######################################################################################################################################################################################
+  # Q6. 다음 매트릭스에 대하여 몇 개의 작업(Jobs)가 존재하는가? 
+  question_7:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        fruit: [apple, banana]
+        color: [red, yellow]
+        include:
+          - fruit: apple       # + 1개 
+            color: green
+            
+          - fruit: banana      
+            shape: long           
+            
+          - fruit: cherry      # + 1개 
+            color: red
+            
+             
+          - fruit: apple        
+            size: large
+            flavor: sweet      
+            
+          - fruit: banana      # + 1개 
+            color: green
+            flavor: bitter      
+            
+          - fruit: cherry      # + 1개    ** 세 번째 아이템에서 추가된 {fruit: cherry, color: red}는 기존의 4*4 매트릭스 조합이 아니므로    
+            shape: round
+            color: red          
+          
+          - fruit: orange      # + 1개
+            color: orange
+            shape: round         
+    steps:
+      - name: Print Combinations
+        run: |
+          echo "Matrix Combinations:"
+          echo "${{ toJson(matrix) }}"
+
+  # A6. 9개 (4 + 5) 
+
+  
