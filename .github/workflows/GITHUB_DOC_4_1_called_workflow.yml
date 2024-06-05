@@ -1,0 +1,44 @@
+name: Reusable Logging Workflow (Called workflow)  
+
+on:
+  workflow_call:
+    inputs:
+      firstword:
+        required: true
+        type: string
+      secondword:
+        required: true
+        type: string 
+    secrets:
+      myPAT:
+        required: true
+    # Map the workflow outputs to job outputs
+    outputs:
+      firstoutput:
+        description: "The first output string"
+        value: ${{ jobs.map-outputs.outputs.output1 }}
+      secondoutput:
+        description: "The second output string"
+        value: ${{ jobs.map-outputs.outputs.output2 }}
+
+jobs:
+  log-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log inputs 
+        run: |
+          echo "${{ inputs.firstword }}"
+          echo "${{ inputs.secondword }}"
+          echo "${{ secrets.myPAT }}" 
+
+  map-outputs: 
+    runs-on: ubuntu-latest
+    # Map the job outputs to step outputs
+    outputs:
+      output1: ${{ steps.step1.outputs.firstoutput }}
+      output2: ${{ steps.step2.outputs.secondoutput }}
+    steps: 
+      - id: step1 
+        run: echo "firstoutput=${{ inputs.firstword }}" >> $GITHUB_OUTPUT
+      - id: step2 
+        run: echo "secondoutput=${{ inputs.secondword }}" >> $GITHUB_OUTPUT
