@@ -10,6 +10,7 @@
 [![Add scripts to your workflow](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_1_add_scripts_to_workflow.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_1_add_scripts_to_workflow.yml)
 [![Expressions and Functions](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_2_expressions_and_functions.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_2_expressions_and_functions.yml)
 [![Contexts and Variables](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_3_contexts_and_variables.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_3_contexts_and_variables.yml)
+[![Call Reusable Logging Workflow (Caller workflow)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_4_2_caller_workflow.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_4_2_caller_workflow.yml)
 
 # Microsoft Learn's GitHub Actions Collections  
 https://learn.microsoft.com/en-us/collections/n5p4a5z7keznp5
