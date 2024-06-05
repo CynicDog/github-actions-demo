@@ -11,6 +11,7 @@
 [![Expressions and Functions](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_2_expressions_and_functions.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_2_expressions_and_functions.yml)
 [![Contexts and Variables](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_3_contexts_and_variables.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_3_contexts_and_variables.yml)
 [![Call Reusable Logging Workflow (Caller workflow)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_4_2_caller_workflow.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_4_2_caller_workflow.yml)
+[![Matrix Combinations](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_5_matrix_combinations.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_5_matrix_combinations.yml)
 
 # Microsoft Learn's GitHub Actions Collections  
 https://learn.microsoft.com/en-us/collections/n5p4a5z7keznp5
