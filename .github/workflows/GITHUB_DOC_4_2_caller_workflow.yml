@@ -1,0 +1,52 @@
+# https://docs.github.com/ko/actions/using-workflows/reusing-workflows#nesting-reusable-workflows
+#
+# workflow의 트리거가 workflow_call 이벤트로 정의될 경우, 해당 workflow는 다른 workflow에 의해 호출되어 재사용될 수 있습니다. 
+name: Call Reusable Logging Workflow (Caller workflow) 
+
+on:
+  workflow_dispatch: 
+    inputs:
+      firstword:
+        description: "First word"
+        required: true
+        default: "hello"
+      secondword:
+        description: "Second word"
+        required: true
+        default: "world"
+      logLevel:
+        description: "Log level"
+        required: true 
+        default: "warning"
+      tags: 
+        description: "Test scenario tags"
+
+jobs:
+  call_reusable_workflow:
+    uses: ./.github/workflows/reusuable_workflow.yml
+    with:
+      firstword: ${{ github.event.inputs.firstword }}
+      secondword: ${{ github.event.inputs.secondword }}
+    secrets:
+      myPAT: ${{ secrets.MY_PAT }}
+  
+  and_then_use_outputs:
+    runs-on: ubuntu-latest
+    needs: call_reusable_workflow
+    steps:
+      - name: Display Outputs
+        run: |
+          echo "First output: ${{ needs.call_reusable_workflow.outputs.firstoutput }}"
+          echo "Second output: ${{ needs.call_reusable_workflow.outputs.secondoutput }}"
+
+# Both actions and reusable workflows offer a way to modularize and reuse code in GitHub Actions. 
+# When to use which?
+# [ 액션 (Actions)]
+#    *   특정 작업을 수행해야 할 때 미리 정의된 액션을 사용합니다. 해당 액션이 포함하는 작업이 필요한 경우입니다.
+#    *   코드를 여러 저장소나 조직에서 재사용해야 할 때 액션을 사용합니다.
+#    *   유연성이 필요하고 Dockerfile이나 JavaScript로 작성된 사용자 지정 코드를 실행하려는 경우 액션을 사용합니다.
+# 
+# [ 재사용 가능한 워크플로우 (Reusable Workflows) ]
+#    *   동일한 저장소 내에서 여러 워크플로우에서 재사용할 일련의 단계가 있는 경우 재사용 가능한 워크플로우를 사용합니다.
+#    *   여러 작업과 단계가 포함된 워크플로우 로직을 정의해야 할 때 재사용 가능한 워크플로우를 사용합니다.
+#    *   더 높은 수준의 추상화를 유지하고 복잡한 워크플로우 로직을 캡슐화하려는 경우 재사용 가능한 워크플로우를 사용합니다.
