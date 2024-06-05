@@ -30,6 +30,9 @@ jobs:
           cache: 'npm'
 
       # npm 및 node_modules 디렉터리를 캐시합니다. 
+      # The cache action first searches for cache hits for key and the cache version in the branch containing the workflow run. 
+      # If there is no hit, it searches for restore-keys and the version. If there are still no hits in the current branch, 
+      # the cache action retries same steps on the default branch.
       - name: Cache NPM dependencies
         id: cache-npm-deps
         uses: actions/cache@v4
