@@ -2,7 +2,10 @@
 #
 # 컨텍스트는 workflow 실행, 변수, 실행기 환경, 작업 및 단계에 대한 정보에 액세스하는 방법입니다. 각 컨텍스트는 문자열 또는 다른 개체일 수 있는 속성을 포함하는 개체입니다.
 # workflow key에 따라 사용할 수 있는 컨텍스트가 달라집니다. (https://docs.github.com/ko/actions/learn-github-actions/contexts#context-availability) 
-name: Contexts 
+#
+# 컨텍스트 -> YAML에서 구조화된 정보에 접근하고, 조건을 작성하며, 표현식을 작성할 때
+# 환경변수 -> 스크립트, 명령 내의 직접 참조 및 로깅 
+name: Contexts and Variables 
 
 on:
   workflow_dispatch:
@@ -47,3 +50,15 @@ jobs:
         env:
           MATRIX_CONTEXT: ${{ toJson(matrix) }}
         run: echo "$MATRIX_CONTEXT"
+
+  dump_variables_to_log:
+    runs-on: ubuntu-latest
+    steps:
+      # 리포지토리 settings > Secrets and Variables > Actions > Variables 이동 및 커스텀 변수 추가 
+      - name: Dump configurable repository variable 
+        env: 
+          # using configuration variables with the vars context across a workflow
+          MY_COMPANY_NAME: ${{ vars.MY_COMPANY_NAME }}
+        run: echo "$MY_COMPANY_NAME" # expects: 'INBREIN' 
+
+      # default 환경변수 > MS_LEARN_3_environment_variables.yml 참고 
