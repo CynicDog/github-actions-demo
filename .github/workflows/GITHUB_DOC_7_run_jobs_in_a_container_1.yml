@@ -1,0 +1,77 @@
+# https://docs.github.com/en/actions/using-jobs/running-jobs-in-a-container
+
+# GitHub Container Registry에 Github 리포지토리에 존재하는 Dockerfile을 푸시합니다. 
+name: Publish to Docker With Github Actions 
+
+on:
+  workflow_dispatch: 
+    inputs:
+      logLevel:
+        description: Log level
+        required: true 
+        default: 'warning'
+      tags: 
+        description: Test scenario tags 
+        
+permissions:
+  packages: write
+  contents: read
+  
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
+    steps:
+      # 프로젝트 디렉토리에 위치한 Dockerfile을 체크아웃하기 위해 actions/checkout@v4 액션 실행   
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      # 푸시될 이미지 메타 데이터 설정 
+      # 액션 실행 로그에서 `ghcr.io/cynicdog/publish-packages/game:sha-adffea4`와 같이 해시 태그가 추가된 이미지 이름 확인 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/publish-packages/game
+          tags: type=sha
+      
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKER_REGISTRY }}
+      
+      - name: Build container
+        uses: docker/build-push-action@v5
+        with:
+          # 리포지토리 root에 위치한 Dockerfile 빌드 
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+
+  run:
+    runs-on: ubuntu-latest
+    needs: publish
+    steps:
+      # Login to GHCR
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKER_REGISTRY }}
+          
+      # 직접 명령어 사용을 통한 이미지 풀링 및 실행 
+      # Pull the Docker image
+      - name: Pull Docker image
+        run: docker pull ${{ needs.publish.outputs.image_tag }}
+      
+      # Run the Docker container
+      - name: Run Docker container
+        run: docker run -d --name my-container -p 8080:80 ${{ needs.publish.outputs.image_tag }}
+      
+      # 로그 확인 
+      - name: Display container logs
+        run: docker logs my-container
