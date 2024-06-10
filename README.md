@@ -14,6 +14,7 @@
 [![Matrix Combinations](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_5_matrix_combinations.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_5_matrix_combinations.yml)
 [![Publish And Run Docker Image With Direct Usage of Command](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_7_1_run_jobs_in_a_container.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_7_1_run_jobs_in_a_container.yml)
 [![Publish And Run Docker Image With Container Option](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_7_2_run_jobs_in_a_container.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_7_2_run_jobs_in_a_container.yml)
+[![Environment protection rules, secrets and variables](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_8_environments.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_8_environments.yml)
 
 # Microsoft Learn's GitHub Actions Collections  
 https://learn.microsoft.com/en-us/collections/n5p4a5z7keznp5
