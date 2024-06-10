@@ -57,6 +57,10 @@ jobs:
         with:
           name: webpack artifacts 
           path: node_modules 
+      # 다운로드된 artifacts 폴더 트리 출력     
+      - name: List node_modules directory
+        run: |
+          ls -R node_modules
 
 ## Build continuous integration (CI) workflows by using GitHub Actions > Customize your workflow with environment variables and artifact data
 ## https://learn.microsoft.com/en-us/training/modules/github-actions-ci/2b-github-actions-essential-features
