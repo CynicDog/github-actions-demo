@@ -1,0 +1,44 @@
+# https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment
+#
+# Environments는 프로덕션, 스테이징, 개발과 같은 일반적인 배포 대상을 설명하는 데 사용됩니다.
+# 워크플로우 작업이 environment를 참조할 때, 해당 environment의 보호 규칙(Protection rules)이 모두 통과될 때까지 작업이 시작되지 않습니다.
+#
+# Protection rules types:
+#
+#     - Required reviewers: 필수 검토자를 사용하여 environment을 참조하는 워크플로우 작업을 승인해야 하는 특정 사람이나 팀을 요구할 수 있습니다.
+#                          최대 **6명의 사용자 또는 팀**을 검토자로 지정할 수 있습니다.
+#
+#     - Wait timer: 대기 타이머를 사용하여 작업이 처음 트리거된 후 특정 시간 동안 작업을 지연시킬 수 있습니다.
+#                   시간(분 단위)은 1에서 43,200(30일) 사이의 정수여야 합니다.
+#
+#     - 배포 브랜치 및 태그: 배포 브랜치 및 태그를 사용하여 environment에 배포할 수 있는 브랜치와 태그를 제한할 수 있습니다.
+#                           environment에 대한 배포 브랜치 및 태그의 옵션은 다음과 같습니다.
+#
+#              1. 제한 없음
+#              2. 보호된 브랜치만: 브랜치 보호 규칙이 활성화된 브랜치만 environment에 배포할 수 있습니다.
+#              3. 선택된 브랜치 및 태그: 지정한 이름 패턴과 일치하는 브랜치 및 태그만 environment에 배포할 수 있습니다.
+#
+#     - 관리자 우회(Administrator's bypass): 기본적으로 관리자는 보호 규칙을 우회하고 특정 environment으로 배포를 강제할 수 있습니다.
+#
+#     - 사용자 정의 보호 규칙: 사용자 정의 보호 규칙을 활성화하여 타사 서비스를 사용해 배포를 차단할 수 있습니다.
+#                            타사 시스템은 관찰 가능성 시스템, 변경 관리 시스템, 코드 품질 시스템 또는 배포가 안전하게 롤아웃되기 전에 준비 상태를 평가하는 데 사용하는 기타 custom 구성입니다.
+
+name: Environment protection rules, secrets and variables   
+on: 
+  workflow_dispatch: 
+
+jobs: 
+  deployment: 
+    runs-on: ubuntu-latest 
+    # 워크플로우 작업이 environment을 참조할 때, 해당 environment의 보호 규칙이 모두 통과될 때까지 작업이 시작되지 않습니다.
+    environment: development
+    steps:
+      - name: Using environment protection rules  
+        run: echo "Demo Usage of environments with the protection rules of required reviewers."  
+      - name: Using environment secrets 
+        # environment secrets은 해당 environment를 참조하는 워크플로우 작업에만 사용할 수 있습니다.
+        run: echo " ${{ secrets.SOME_ENVIRONMENT_SECRET_FOR_DEVELOPMENT_ENVIRONMENT }} " 
+      - name: Using environment variables 
+        # environment variable은 해당 environment를 참조하는 워크플로우 작업에만 사용할 수 있습니다.
+        # 이러한 변수는 `vars` 컨텍스트를 사용하여 접근할 수 있습니다.
+        run: echo " ${{ vars.SOME_ENVIRONMENT_VARIABLE_FOR_DEVELOPMENT_ENVIRONMENT }} "
