@@ -15,7 +15,7 @@
 [![Publish And Run Docker Image With Direct Usage of Command](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_7_1_run_jobs_in_a_container.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_7_1_run_jobs_in_a_container.yml)
 [![Publish And Run Docker Image With Container Option](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_7_2_run_jobs_in_a_container.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_7_2_run_jobs_in_a_container.yml)
 [![Environment protection rules, secrets and variables](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_8_environments.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_8_environments.yml)
-[![Creating PostgreSQL service containers](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_9_containerized_services.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_9_containerized_services.yml)
+[![Creating service containers (Postgres / Redis)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_9_containerized_services.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_9_containerized_services.yml)
 
 # Microsoft Learn's GitHub Actions Collections  
 https://learn.microsoft.com/en-us/collections/n5p4a5z7keznp5
