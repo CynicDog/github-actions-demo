@@ -1,0 +1,115 @@
+# https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers
+#
+# Service containers are Docker containers that provide a simple and portable way for you to host services 
+# that you might need to test or operate your application in a workflow. 
+#
+# GitHub creates a fresh Docker container for each service configured in the workflow, and destroys the service container when the job completes. 
+# Steps in a job can communicate with all service containers that are part of the same job.
+#
+# You can configure jobs in a workflow to run directly on a runner machine or in a Docker container. 
+# Communication between a job and its service containers is different depending on whether 
+#     1) a job runs directly on the runner machine, or  
+#     2) in a container.
+name: Creating PostgreSQL service containers
+on: 
+  workflow_dispatch:
+
+jobs:
+  # When you run jobs in a container, GitHub connects service containers to the job using Docker's user-defined **bridge** networks.
+  # Running the job and services in a container simplifies network access. You can access a service container using the label 
+  # you configure in the workflow. The hostname of the service container is automatically mapped to the label name.
+  container-job:
+    # Containers must run in Linux based operating systems
+    runs-on: ubuntu-latest
+    # Docker Hub image that `container-job` executes in
+    container: node:18.20-alpine
+
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+        # If your job runs in a Docker container, you do not need to map ports on the host or the service container.
+        # ports:
+        #   # Maps tcp port 5432 on service container to the host
+        #   - 5432:5432
+
+    steps:
+      # Downloads a copy of the code in your repository before running CI tests
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      # Performs a clean installation of all dependencies in the `package.json` file
+      # For more information, see https://docs.npmjs.com/cli/ci.html
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Connect to PostgreSQL
+        # Runs a script that creates a PostgreSQL table, populates
+        # the table with data, and then retrieves the data.
+        run: node client.js
+        # Environment variables used by the `client.js` script to create a new PostgreSQL table.
+        env:
+          # The hostname used to communicate with the PostgreSQL service container. 
+          # You can access a service container using the label
+          POSTGRES_HOST: postgres
+          # The default PostgreSQL port
+          POSTGRES_PORT: 5432
+
+  # When running jobs directly on the runner machine, you can access service containers using 'localhost:<port>' or '127.0.0.1:<port>'. 
+  # GitHub configures the container network to enable communication from the service container to the Docker host.
+  runner-job:
+    # You must use a Linux environment when using service containers or container jobs
+    runs-on: ubuntu-latest
+
+    # Service containers to run with `runner-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+    steps:
+      # Downloads a copy of the code in your repository before running CI tests
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      # Performs a clean installation of all dependencies in the `package.json` file
+      # For more information, see https://docs.npmjs.com/cli/ci.html
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Connect to PostgreSQL
+        # Runs a script that creates a PostgreSQL table, populates
+        # the table with data, and then retrieves the data
+        run: node client.js
+        # Environment variables used by the `client.js` script to create
+        # a new PostgreSQL table.
+        env:
+          # The hostname used to communicate with the PostgreSQL service container
+          POSTGRES_HOST: localhost
+          # The default PostgreSQL port
+          POSTGRES_PORT: 5432 
