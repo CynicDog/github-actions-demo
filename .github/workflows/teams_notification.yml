@@ -15,7 +15,7 @@ jobs:
           echo ::set-output name=MESSAGE::${{ github.event.head_commit.message }}
           echo ::set-output name=AUTHOR::${{ github.actor }}
           echo ::set-output name=BRANCH::${{ github.ref }}
-          echo ::set-output name=COMMIT_URL::${{ github.server_url }}/${{ github.repository} }/commit/${{ github.sha }}
+          echo ::set-output name=COMMIT_URL::${{ github.server_url }}/${{ github.repositoryUrl }}/commit/${{ github.sha }}
 
       - name: Send Notification
         run: |
