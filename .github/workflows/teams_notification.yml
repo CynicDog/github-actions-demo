@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: 
 
 jobs:
   notify-teams:
@@ -13,32 +12,32 @@ jobs:
       - name: Extract Commit Information
         id: commit_info
         run: |
-          echo ::set-output name=MESSAGE::${{ github.event.head_commit.message }}
-          echo ::set-output name=AUTHOR::${{ github.actor }}
-          echo ::set-output name=BRANCH::${{ github.ref }}
-          echo ::set-output name=COMMIT_URL::${{ github.server_url }}/${{ github.repositoryUrl }}/commit/${{ github.sha }}
+          echo "MESSAGE=$(git log -1 --pretty=format:%s)" >> $GITHUB_ENV
+          echo "AUTHOR=$(git log -1 --pretty=format:%an)" >> $GITHUB_ENV
+          echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          echo "COMMIT_URL=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}" >> $GITHUB_ENV
 
       - name: Send Notification
         run: |
           curl -X POST -H 'Content-type: application/json' -d "{
-            \"text\": \"New commit pushed to branch: ${{ steps.commit_info.outputs.BRANCH }}\",
+            \"text\": \"New commit pushed to branch: ${{ env.BRANCH }}\",
             \"sections\": [
               {
                 \"activityTitle\": \"Commit Information\",
                 \"activitySubtitle\": \"Message: \",
-                \"activityText\": \"${{ steps.commit_info.outputs.MESSAGE }}\",
+                \"activityText\": \"${{ env.MESSAGE }}\",
                 \"facts\": [
                   {
                     \"name\": \"Author\",
-                    \"value\": \"${{ steps.commit_info.outputs.AUTHOR }}\"
+                    \"value\": \"${{ env.AUTHOR }}\"
                   },
                   {
                     \"name\": \"Branch\",
-                    \"value\": \"${{ steps.commit_info.outputs.BRANCH }}\"
+                    \"value\": \"${{ env.BRANCH }}\"
                   },
                   {
                     \"name\": \"Commit URL\",
-                    \"value\": \"[${{ steps.commit_info.outputs.COMMIT_URL }}](${{ steps.commit_info.outputs.COMMIT_URL }})\"
+                    \"value\": \"[${{ env.COMMIT_URL }}](${{ env.COMMIT_URL }})\"
                   }
                 ]
               }
