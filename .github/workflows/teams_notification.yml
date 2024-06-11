@@ -12,10 +12,10 @@ jobs:
       - name: Extract Commit Information
         id: commit_info
         run: |
-          echo ::set-output name=MESSAGE::$(git log -1 --pretty=format:"%s")
-          echo ::set-output name=AUTHOR::$(git log -1 --pretty=format:"%an")
-          echo ::set-output name=BRANCH::${GITHUB_REF#refs/heads/}
-          echo ::set-output name=COMMIT_URL::${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}
+          echo ::set-output name=MESSAGE::${{ github.event.head_commit.message }}
+          echo ::set-output name=AUTHOR::${{ github.actor }}
+          echo ::set-output name=BRANCH::${{ github.ref }}
+          echo ::set-output name=COMMIT_URL::${{ github.server_url }}/${{ github.repository} }/commit/${{ github.sha }}
 
       - name: Send Notification
         run: |
