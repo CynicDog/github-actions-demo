@@ -13,10 +13,11 @@
 name: Skip Workflow 
 
 on:
-  push: 
-    branches: 
-      - main
-
+  # push: 
+  #   branches: 
+  #     - main
+  workflow_dispatch: 
+  
 jobs: 
   a-job-to-be-skipped:
     runs-on: ubuntu-latest
