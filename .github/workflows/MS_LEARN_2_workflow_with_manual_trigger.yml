@@ -7,9 +7,10 @@
 #   3. dispatch 트리거
 #      - repository_dispatch: 외부 이벤트(REST API)에 의해 트리거됨
 #      - workflow_dispatch: GitHub UI에서 수동으로 트리거됨 
-
-# name: My First Workflow with Manual Triggers
-
+#
+# workflow의 name 속성은 non-required
+# action의 name, description 속성은 required  
+name: My First Workflow with Manual Triggers
 on:
   workflow_dispatch: 
     inputs:
