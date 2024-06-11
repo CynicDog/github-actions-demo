@@ -1,0 +1,45 @@
+name: Notify Teams over GitHub events
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify-teams:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Commit Information
+        id: commit_info
+        run: |
+          echo ::set-output name=MESSAGE::$(git log -1 --pretty=format:"%s")
+          echo ::set-output name=AUTHOR::$(git log -1 --pretty=format:"%an")
+          echo ::set-output name=BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=COMMIT_URL::${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}
+
+      - name: Send Notification
+        run: |
+          curl -X POST -H 'Content-type: application/json' -d "{
+            \"text\": \"New commit pushed to branch: ${{ steps.commit_info.outputs.BRANCH }}\",
+            \"sections\": [
+              {
+                \"activityTitle\": \"Commit Information\",
+                \"activitySubtitle\": \"Message: \",
+                \"activityText\": \"${{ steps.commit_info.outputs.MESSAGE }}\",
+                \"facts\": [
+                  {
+                    \"name\": \"Author\",
+                    \"value\": \"${{ steps.commit_info.outputs.AUTHOR }}\"
+                  },
+                  {
+                    \"name\": \"Branch\",
+                    \"value\": \"${{ steps.commit_info.outputs.BRANCH }}\"
+                  },
+                  {
+                    \"name\": \"Commit URL\",
+                    \"value\": \"[${{ steps.commit_info.outputs.COMMIT_URL }}](${{ steps.commit_info.outputs.COMMIT_URL }})\"
+                  }
+                ]
+              }
+            ]
+          }" "${{ secrets.TEAMS_WEB_HOOK_URL }}"
