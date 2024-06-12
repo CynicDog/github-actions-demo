@@ -81,7 +81,7 @@ jobs:
         run: |
           {
             echo 'JSON_RESPONSE<<EOF'
-            curl -s https://jsonplaceholder.typicode.com/posts/1
+            curl https://example.com
             echo EOF
           } >> "$GITHUB_ENV"
       - name: Print the response
