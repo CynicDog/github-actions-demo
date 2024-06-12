@@ -1,0 +1,100 @@
+# https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#about-workflow-commands
+#
+# Actions can communicate with the runner machine to set environment variables, output values used by other actions, 
+# add debug messages to the output logs, and other tasks.
+# Most workflow commands use the echo command in a specific format, while others are invoked by writing to a file. 
+# 
+# You can use workflow commands when running shell commands in a workflow or in an action's code.
+#
+# Example of a workflow command: 
+#     ``` 
+#         echo "::workflow-command parameter1={data},parameter2={data}::{command value}"
+#     ```
+#
+# Use the :: syntax to run the workflow commands within your YAML file; these commands are then sent to the runner over stdout.
+# 
+# For example, instead of using code to create an error annotation, as below:
+#     ```
+#         core.error('Missing semicolon', {file: 'app.js', startLine: 1})
+#     ``` 
+#
+# , use `error` command in your workflow directly to create the same error annotaion: 
+#     ```
+#         - name: Create annotation for build error
+#           run: echo "::error file=app.js,line=1::Missing semicolon"
+#     ```
+
+name: Workflow Commands 
+on: 
+  workflow_dispatch:
+
+jobs: 
+  # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-grouping-log-lines
+  grouping-log-lines:        
+    runs-on: ubuntu-latest
+    steps:
+      - name: Group of log lines
+        run: |
+            echo "::group::My title"
+            echo "Inside group"
+            echo "::endgroup::"
+            
+  # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#masking-a-value-in-a-log
+  masking-values:
+    runs-on: ubuntu-latest
+    env:
+      MY_NAME: "Mona The Octocat"
+    steps:
+      # masking an environment variable 
+      - name: bash-version
+        run: echo "::add-mask::$MY_NAME"
+      # masking an output 
+      - id: sets-a-secret
+        name: Generate, mask, and output a secret
+        run: |
+          the_secret=$((RANDOM))
+          echo "::add-mask::$the_secret"
+          echo "secret-number=$the_secret" >> $GITHUB_OUTPUT
+      - name: Use that secret output (protected by a mask)
+        run: |
+          echo "the secret number is ${{ steps.sets-a-secret.outputs.secret-number }}" 
+          
+  # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#stopping-and-starting-workflow-commands
+  stopping-and-resume: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Disable workflow commands
+        run: |
+          echo '::warning:: This is a warning message, to demonstrate that commands are being processed.'
+          stopMarker=$(uuidgen)
+          echo "::stop-commands::$stopMarker"
+          echo '::warning:: This will NOT be rendered as a warning, because stop-commands has been invoked.'
+          echo "::$stopMarker::"
+          echo '::warning:: This is a warning again, because stop-commands has been turned off.'
+  
+  # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+  multi-line-strings:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Set the value in bash
+        id: step_one
+        run: |
+          {
+            echo 'JSON_RESPONSE<<EOF'
+            curl https://jsonplaceholder.typicode.com/posts/1
+            echo EOF
+          } >> "$GITHUB_ENV"
+      - name: Print the response
+        run: echo "$JSON_RESPONSE"
+
+  # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary
+  write-a-job-summary: 
+    runs-on: ubuntu-latest
+    steps: 
+      - run: echo "### Hello world! :rocket:" >> $GITHUB_STEP_SUMMARY
+      - run: | 
+          echo "This is the lead in sentence for the list" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY # this is a blank line
+          echo "- Lets add a bullet point" >> $GITHUB_STEP_SUMMARY
+          echo "- Lets add a second bullet point" >> $GITHUB_STEP_SUMMARY
+          echo "- How about a third one?" >> $GITHUB_STEP_SUMMARY        
