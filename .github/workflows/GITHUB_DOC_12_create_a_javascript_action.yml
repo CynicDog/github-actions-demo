@@ -1,0 +1,12 @@
+# https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action
+name: Create a Javascript action 
+on: 
+  workflow_dispatch:
+
+jobs:
+  use-custom-action:
+    runs-on: ubuntu-latest 
+    steps: 
+      - uses: actions/checkout@v4.1.5
+      - name: custom-action-usage-demo
+        uses: ./.github/actions/doc_javascript_action 
