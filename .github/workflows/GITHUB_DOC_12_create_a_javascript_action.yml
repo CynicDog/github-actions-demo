@@ -8,5 +8,10 @@ jobs:
     runs-on: ubuntu-latest 
     steps: 
       - uses: actions/checkout@v4.1.5
-      - name: custom-action-usage-demo
+      - name: Use a custom action 
+        id: use-a-custom-action
         uses: ./.github/actions/doc_javascript_action 
+        with:
+          who-to-greet: 'Hello GitHub Actions!'
+      - name: Get a custom action output 
+        run: echo "The greeting time was ${{ steps.use-a-custom-action.outputs.time }}"
