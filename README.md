@@ -19,6 +19,7 @@
 [![Label and Comment Issues](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_10_label_and_comment_issues.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_10_label_and_comment_issues.yml)
 [![Notify Teams over GitHub events](https://github.com/CynicDog/github-actions-demo/actions/workflows/teams_notification.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/teams_notification.yml)
 [![Workflow Commands](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_11_workflow_commands.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_11_workflow_commands.yml)
+[![Create a Javascript action](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_12_create_a_javascript_action.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_12_create_a_javascript_action.yml)
 
 # Microsoft Learn's GitHub Actions Collections  
 https://learn.microsoft.com/en-us/collections/n5p4a5z7keznp5
