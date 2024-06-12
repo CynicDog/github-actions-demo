@@ -18,6 +18,7 @@
 [![Creating service containers (Postgres / Redis)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_9_containerized_services.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_9_containerized_services.yml)
 [![Label and Comment Issues](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_10_label_and_comment_issues.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_10_label_and_comment_issues.yml)
 [![Notify Teams over GitHub events](https://github.com/CynicDog/github-actions-demo/actions/workflows/teams_notification.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/teams_notification.yml)
+[![Workflow Commands](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_11_workflow_commands.yml/badge.svg)](https://github.com/CynicDog/github-actions-demo/actions/workflows/GITHUB_DOC_11_workflow_commands.yml)
 
 # Microsoft Learn's GitHub Actions Collections  
 https://learn.microsoft.com/en-us/collections/n5p4a5z7keznp5
