@@ -15,3 +15,32 @@ jobs:
           result-encoding: string 
       - name: Get result 
         run: echo "${{ steps.write-a-string-in-script.outputs.result }}"
+        
+  script-with-retry: 
+    runs-on: ubuntu-latest
+    steps: 
+      - name: get issues 
+        uses: actions/github-script@v7.0.1
+        with:
+          retries: 3
+          retry-exempt-status-codes: 400,401
+          
+          # The following arguments will be provided
+          # 
+          # `github`     : A pre-authenticated octokit/rest.js client with pagination plugins
+          # `context`    : An object containing the context of the workflow run
+          # `core`       : A reference to the @actions/core package
+          # `glob`       : A reference to the @actions/glob package
+          # `io`         : A reference to the @actions/io package
+          # `exec`       : A reference to the @actions/exec package
+          # `require`    : A proxy wrapper around the normal Node.js require 
+
+          script: |
+            github.rest.issues.get({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            })
+  
+
+            
