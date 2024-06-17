@@ -1,0 +1,28 @@
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
+name: Fail Fast and Continue on Error 
+on:
+  workflow_dispatch: 
+
+jobs:
+  demo: 
+    runs-on: ubuntu-latest 
+    continue-on-error: ${{ matrix.coe-flag }}
+    strategy:
+      fail-fast: true
+      matrix:
+        version: [6, 7, 8]
+        coe-flag: [false] 
+        include: 
+          - version: 9
+            coe-flag: true 
+    steps:
+      - name: Run demo
+        run: |
+          echo "Running tests for version ${{ matrix.version }}"
+          if [ ${{ matrix.version }} -eq 9 ]; then
+            echo "Simulating failure for version 9"
+            exit 1
+          else
+            echo "Simulating success for version ${{ matrix.version }}"
+            exit 0
+          fi
