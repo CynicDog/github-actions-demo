@@ -18,7 +18,7 @@ jobs:
             }
           ' --jq '.data.repository.issues.totalCount')"
 
-          echo 'NUM_OPEN_ISSUES='$numOpenIssues'' >> GITHUB_ENV 
+          echo 'NUM_OPEN_ISSUES=$numOpenIssues' >> GITHUB_ENV 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER: ${{ github.repository_owner }}
