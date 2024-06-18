@@ -10,7 +10,7 @@ jobs:
       
       - name: Perform composite action 
         id: perform-composite-action 
-        uses: ./github/actions/10_composite_action
+        uses: ./.github/actions/10_composite_action
         with:
           who-to-greet: "Mona the Octocat" 
 
