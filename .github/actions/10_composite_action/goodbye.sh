@@ -1,1 +1,3 @@
-echo Goodbye
+#!/bin/sh
+
+echo "Goodbye"
