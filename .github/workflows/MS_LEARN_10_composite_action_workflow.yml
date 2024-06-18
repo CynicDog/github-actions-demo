@@ -1,0 +1,19 @@
+name: Composite Action usage demo 
+on: 
+  workflow_dispatch: 
+
+jobs: 
+  hello_world_action: 
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v4
+      
+      - name: Perform composite action 
+        id: perform-composite-action 
+        uses: ./github/actions/10_composite_action
+        with:
+          who-to-greet: "Mona the Octocat" 
+
+      - name: Print the output of the called action 
+        shell: bash
+        run: echo  random-number "${{ steps.perform-composite-action.outputs.random-number }}"
